@@ -5,30 +5,32 @@ from pathlib import Path
 
 import pytest
 
-import robotframework_seleniumlibrary_translation_fi
+import robotframework_seleniumlibrary_translation
 
 
 @pytest.fixture(scope="module")
 def file() -> Path:
     return (
         Path(__file__).parent.parent
-        / "robotframework_seleniumlibrary_translation_fi"
-        / "translation.json"
+        / "robotframework_seleniumlibrary_translation"
+        / "translation_fi.json"
     )
 
 
 @pytest.fixture(scope="module")
-def data() -> robotframework_seleniumlibrary_translation_fi.Language:
-    lang = robotframework_seleniumlibrary_translation_fi.get_language()
-    result_path = Path(lang["path"])
+def data() -> robotframework_seleniumlibrary_translation.Language:
+    lang = robotframework_seleniumlibrary_translation.get_language()
+    result_path = Path(lang[0]["path"])
     with result_path.open("r") as file:
         return json.load(file)
 
 
 def test_translation(file: Path):
-    lang = robotframework_seleniumlibrary_translation_fi.get_language()
-    assert lang["language"] == "fi"
-    result_path = Path(lang["path"])
+    lang = robotframework_seleniumlibrary_translation.get_language()
+    assert len(lang) == 1
+    lang_fi = lang[0]
+    assert lang_fi["language"] == "fi"
+    result_path = Path(lang_fi["path"])
     assert result_path == file
     assert result_path.is_file()
 
@@ -62,7 +64,7 @@ def test_keyword_names_are_unique(data: dict):
 
 
 def test_keyword_names_no_space(
-    data: robotframework_seleniumlibrary_translation_fi.Language,
+    data: robotframework_seleniumlibrary_translation.Language,
 ):
     for translation, value in data.items():
         assert " " not in translation, translation
